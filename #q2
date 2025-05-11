@@ -1,0 +1,40 @@
+from langchain.chat_models import ChatOpenAI
+from langchain.prompts import PromptTemplate
+import os
+
+# Set your OpenAI API key here
+os.environ["OPENAI_API_KEY"] = "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"  # Replace with your actual key
+
+# Define prompt template
+prompt = PromptTemplate(
+    input_variables=["year", "km", "fuel", "transmission", "engine", "power", "mileage"],
+    template="""
+You are a car pricing assistant. Given the following specs:
+- Year: {year}
+- Kilometers Driven: {km}
+- Fuel Type: {fuel}
+- Transmission: {transmission}
+- Engine (CC): {engine}
+- Power (BHP): {power}
+- Mileage (kmpl or km/kg): {mileage}
+
+Explain in 2-3 sentences what factors might contribute to this car being priced higher or lower in the used car market.
+"""
+)
+
+# Create LLM pipeline
+llm = ChatOpenAI(model="gpt-4", temperature=0.3)
+chain = prompt | llm
+
+# Example input
+response = chain.invoke({
+    "year": "2018",
+    "km": "30000",
+    "fuel": "Petrol",
+    "transmission": "Automatic",
+    "engine": "1497",
+    "power": "120",
+    "mileage": "17.5"
+})
+
+print(response.content)
